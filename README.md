@@ -92,4 +92,3 @@ git clone https://huggingface.co/Xerror/XTTS-v2_models
 ```bash
 python main.py
 ```
-```
