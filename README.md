@@ -1,13 +1,13 @@
 # 🚀 **InterVox-0.2 Installation Guide**
 
-### Step 1: Clone the **InterVox** Repository
+### Step 1: Clone the **InterVox-0.2** Repository
 ```bash
 git clone https://github.com/austinkangmusic/InterVox-0.2.git
 ```
 
 ### Step 2: Navigate to the Project Directory
 ```bash
-cd InterVox
+cd InterVox-0.2
 ```
 
 ### Step 3: Set Up and Activate Virtual Environment
