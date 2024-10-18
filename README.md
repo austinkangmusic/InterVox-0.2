@@ -1,4 +1,4 @@
-# 🚀 **InterVox Installation Guide**
+# 🚀 **InterVox-0.2 Installation Guide**
 
 ### Step 1: Clone the **InterVox** Repository
 ```bash
