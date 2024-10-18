@@ -1,4 +1,3 @@
-```markdown
 # 🚀 **InterVox Installation Guide**
 
 ### Step 1: Clone the **InterVox** Repository
