@@ -2,7 +2,7 @@
 
 ### Step 1: Clone the **InterVox** Repository
 ```bash
-git clone https://github.com/austinkangmusic/InterVox.git
+git clone https://github.com/austinkangmusic/InterVox-0.2.git
 ```
 
 ### Step 2: Navigate to the Project Directory
