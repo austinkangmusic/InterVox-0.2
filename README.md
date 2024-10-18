@@ -1,39 +1,96 @@
-## Installation
-Get the folders.
-1.
+```markdown
+# 🚀 **InterVox Installation Guide**
+
+### Step 1: Clone the **InterVox** Repository
 ```bash
-git clone https://github.com/austinkangmusic/Emma-0.4v.git
+git clone https://github.com/austinkangmusic/InterVox.git
 ```
 
-## cd to Emma-0.4v directory.
-2.
+### Step 2: Navigate to the Project Directory
 ```bash
-cd Emma-0.4v
+cd InterVox
 ```
 
-## Download the XTTS-v2 model.
-3.
-```bash
-git clone https://huggingface.co/Xerror/XTTS-v2
-```
-
-## Create a virtual environment, activate it and find the path of the python exe to select the intepreter.
-4.
+### Step 3: Set Up and Activate Virtual Environment
 ```bash
 & "D:\Private Server\Apps\PYTHON VERSIONS\python310\python.exe" -m venv venv
 venv/Scripts/Activate
+```
+
+### Step 4: Verify Python Executable Path
+```bash
 Resolve-Path .\venv\Scripts\python.exe
 ```
 
-## Install the requirements.
-5.
+### Step 5: Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-## Run.
-6.
+---
+
+# 🌐 **Download an XTTS-v2 Model**
+
+<details>
+  <summary>Yuki-Chan</summary>
+
+  ```bash
+  git clone https://huggingface.co/Xerror/XTTS-v2_Yuki-Chan
+  ```
+</details>
+
+<details>
+  <summary>C3PO</summary>
+
+  ```bash
+  git clone https://huggingface.co/Xerror/XTTS-v2_C3PO
+  ```
+</details>
+
+<details>
+  <summary>Pain</summary>
+
+  ```bash
+  git clone https://huggingface.co/Xerror/XTTS-v2_pain
+  ```
+</details>
+
+<details>
+  <summary>PeterJarvis</summary>
+
+  ```bash
+  git clone https://huggingface.co/Xerror/XTTS-v2_PeterJarvis
+  ```
+</details>
+
+<details>
+  <summary>S_Dogg</summary>
+
+  ```bash
+  git clone https://huggingface.co/Xerror/XTTS-v2_S_Dogg
+  ```
+</details>
+
+<details>
+  <summary>SamuelL</summary>
+
+  ```bash
+  git clone https://huggingface.co/Xerror/XTTS-v2_SamuelL
+  ```
+</details>
+
+---
+
+**Or download all models at once**:
+
+```bash
+git clone https://huggingface.co/Xerror/XTTS-v2_models
+```
+
+---
+
+### Step 6: Run the Main Script
 ```bash
 python main.py
 ```
-
+```
