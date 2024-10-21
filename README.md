@@ -7,7 +7,7 @@
 <ul style="font-size: 16px;">
   <li><strong>STT:</strong> Powered by <strong>faster-whisper</strong>, an efficient model for real-time transcription.</li>
   <li><strong>TTS:</strong> Uses <strong>Coqui-TTS</strong> to deliver natural, human-like speech.</li>
-  <li><strong>LLM:</strong> Integrated with <strong>OpenAI's GPT</strong> (or similar) for intelligent conversation handling, allowing seamless, context-aware responses.</li>
+  <li><strong>LLM:</strong> Integrated with platforms like <strong>Ollama</strong>, <strong>Groq</strong>, and <strong>OpenAI's GPT</strong> for intelligent, context-aware conversation handling.</li>
   <li>Enables immersive interaction with the ability to interrupt and be interrupted smoothly in a natural flow.</li>
 </ul>
 
