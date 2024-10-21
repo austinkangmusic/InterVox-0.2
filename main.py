@@ -516,7 +516,7 @@ def chat_bot(conversation_history, user_input, halved_user_content, chatbot_list
         battery = get_battery_status()
         chat_replied = False
         system_md = files.read_file("prompts/system.md")
-        personality = files.read_file(f"prompts/personalities/{speaker_name}.md")
+        personality = files.read_file(f"XTTS-v2_models/XTTS-v2_{speaker_name}/personality/{speaker_name}.md")
         system_prompt = f"{personality}\n\n---\n\n**# Battery Status:**\n{battery}\n\n{system_md}"
         try:
             with open("transcription/input.txt", "r") as file:
