@@ -48,7 +48,7 @@
    python download_faster_whisper_models.py
    ```
 
-- **Download XTTS Models**  
+- **Download XTTS-v2 Models**  
    ```bash
    python download_XTTS-v2_models.py
    ```
