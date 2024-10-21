@@ -29,7 +29,7 @@ def initialize_tts_model(speaker_name):
         print("Computing speaker latents...")
         
         # Collect all .wav files from the specified directory
-        audio_files = glob.glob(rf"voices\voice_{speaker_name}\*.wav")
+        audio_files = glob.glob(rf"voice_{speaker_name}\*.wav")
         
         # Compute conditioning latents for all collected audio files
         _gpt_cond_latent, _speaker_embedding = xtts_model.get_conditioning_latents(audio_path=audio_files)
@@ -37,3 +37,4 @@ def initialize_tts_model(speaker_name):
         _initialized = True
     
     return xtts_model, _gpt_cond_latent, _speaker_embedding
+
