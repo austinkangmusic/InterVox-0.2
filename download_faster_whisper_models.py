@@ -9,10 +9,8 @@ import time
 
 # Define the models and their corresponding URLs
 models = {
-    "large-v2": "https://huggingface.co/Systran/faster-distil-whisper-large-v2",
     "large-v3": "https://huggingface.co/Systran/faster-distil-whisper-large-v3",
-    "small.en": "https://huggingface.co/Systran/faster-distil-whisper-small.en",
-    "medium.en": "https://huggingface.co/Systran/faster-distil-whisper-medium.en",
+    "large-v2": "https://huggingface.co/Systran/faster-distil-whisper-large-v2",
     "large-v2": "https://huggingface.co/Systran/faster-whisper-large-v2",
     "large-v1": "https://huggingface.co/Systran/faster-whisper-large-v1",
     "medium.en": "https://huggingface.co/Systran/faster-whisper-medium.en",
@@ -22,9 +20,9 @@ models = {
     "small.en": "https://huggingface.co/Systran/faster-whisper-small.en",
     "small": "https://huggingface.co/Systran/faster-whisper-small",
     "tiny.en": "https://huggingface.co/Systran/faster-whisper-tiny.en",
-    "tiny": "https://huggingface.co/Systran/faster-whisper-tiny",
-    "large-v3": "https://huggingface.co/Systran/faster-whisper-large-v3"
+    "tiny": "https://huggingface.co/Systran/faster-whisper-tiny"
 }
+
 
 # Dictionary to keep track of download status
 download_status = {model: None for model in models}
@@ -166,12 +164,12 @@ def run_in_thread(target, *args):
 
 def create_gui():
     window = tk.Tk()
-    window.title("XTTS-v2 Model Downloader")
-    window.geometry("600x500")
+    window.title("faster-whisper Model Downloader")
+    window.geometry("600x600")
     window.config(bg="#2C2C2C")
     
     # Header Label
-    header = tk.Label(window, text="XTTS-v2 Model Downloader", font=("Arial", 16), fg="#FFFFFF", bg="#2C2C2C")
+    header = tk.Label(window, text="faster-whisper Model Downloader", font=("Arial", 16), fg="#FFFFFF", bg="#2C2C2C")
     header.pack(pady=10)
 
     # Model Selection Checkboxes
@@ -212,3 +210,4 @@ def create_gui():
 
 if __name__ == "__main__":
     create_gui()
+
