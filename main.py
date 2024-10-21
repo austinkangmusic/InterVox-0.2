@@ -22,7 +22,7 @@ def ask_for_model():
         print("No models found in the directory.")
         exit(1)
 
-    print("Please select a model from the following list:")
+    print("Please select a XTTS model from the following list:")
     for i, model in enumerate(available_models, 1):
         print(f"{i}. {model}")
 
@@ -49,8 +49,8 @@ def save_model_to_file(model_name):
         file.write(model_name)
         
 # Get the selected model and save it
-selected_model = ask_for_model()
-save_model_to_file(selected_model)
+speaker_name = ask_for_model()
+save_model_to_file(speaker_name)
 
 
 print("--------------------------------------------------------")
@@ -87,7 +87,7 @@ def ask_for_model():
         print("No models found in the directory.")
         exit(1)
 
-    print("Please select a model from the following list:")
+    print("Please select a faster-whisper model from the following list:")
     for i, model in enumerate(available_models, 1):
         print(f"{i}. {model}")
 
