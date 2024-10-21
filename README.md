@@ -1,4 +1,4 @@
-<img src="photo.png" width="300"/>
+<strong>InterVox</strong> <img src="photo.png" width="500"/>
 ### **🚀 1. Repository Setup:**
 - **Clone the Repository**  
    ```bash
