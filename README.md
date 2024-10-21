@@ -1,7 +1,7 @@
 ---
 
-### **🚀 Repository Setup:**
-1. **Clone the Repository**  
+### **1. 🚀 Repository Setup:**
+   **Clone the Repository**  
    ```bash
    git clone https://github.com/austinkangmusic/InterVox-0.2.git
    ```
