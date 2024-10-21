@@ -4,13 +4,11 @@
   This system combines advanced TTS and STT technologies for a smooth, interactive experience. It allows both interruptions from the user and the system, creating a dynamic conversation flow.
 </p>
 
-<p style="font-size: 16px;">
-  The Speech-to-Text (STT) is powered by <strong>faster-whisper</strong>, a fast and accurate model for real-time transcription, while the Text-to-Speech (TTS) uses <strong>Coqui-TTS</strong>, known for its natural-sounding voice output.
-</p>
-
-<p style="font-size: 16px;">
-  Together, they provide an immersive, responsive interaction where you can easily talk and interrupt the system in a conversational manner.
-</p>
+<ul style="font-size: 16px;">
+  <li><strong>STT:</strong> Powered by <strong>faster-whisper</strong>, known for fast, accurate transcription in real time.</li>
+  <li><strong>TTS:</strong> Uses <strong>Coqui-TTS</strong> for natural, human-like speech output.</li>
+  <li>Enables immersive interaction with the ability to interrupt and be interrupted in conversation.</li>
+</ul>
 
 ---
 
