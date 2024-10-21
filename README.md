@@ -1,5 +1,3 @@
----
-
 ### **🚀 1. Repository Setup:**
 - **Clone the Repository**  
    ```bash
@@ -62,5 +60,3 @@
    ```bash
    python main.py
    ```
-
----
