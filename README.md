@@ -1,6 +1,6 @@
 <img src="photo.png" width="500"/>
 <br/>
-<strong><span style="font-size: 12111px;">InterVox</span></strong>
+<strong><span style="font-size: 30px;">InterVox</span></strong>
 
 ### **🚀 1. Repository Setup:**
 - **Clone the Repository**  
