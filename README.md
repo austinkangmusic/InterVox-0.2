@@ -1,3 +1,4 @@
+<h1 style="font-size: 36px; text-align: center;">InterVox</h1>
 <img src="photo.png" width="500" style="float: left; margin-right: 20px;"/>
 <p style="font-size: 16px;">
   This system combines advanced TTS and STT technologies for a smooth, interactive experience. It allows both interruptions from the user and the system, creating a dynamic conversation flow.
