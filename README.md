@@ -50,7 +50,7 @@
 
 - **Download XTTS Models**  
    ```bash
-   python download_models.py
+   python download_XTTS-v2_models.py
    ```
 
 ---
