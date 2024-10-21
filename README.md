@@ -1,3 +1,7 @@
+My bad! Here's the updated version with the `mkdir` step included:
+
+---
+
 # 🚀 **InterVox-0.2 Installation Guide**
 
 ### Step 1: Clone the **InterVox-0.2** Repository
@@ -28,65 +32,59 @@ pip install -r requirements.txt
 
 ---
 
-# 🌐 **Download an XTTS-v2 Model**
+# 🌐 **Download Whisper Models**
 
-<details>
-  <summary>Yuki-Chan</summary>
-
-  ```bash
-  git clone https://huggingface.co/Xerror/XTTS-v2_Yuki-Chan
-  ```
-</details>
-
-<details>
-  <summary>C3PO</summary>
-
-  ```bash
-  git clone https://huggingface.co/Xerror/XTTS-v2_C3PO
-  ```
-</details>
-
-<details>
-  <summary>Pain</summary>
-
-  ```bash
-  git clone https://huggingface.co/Xerror/XTTS-v2_pain
-  ```
-</details>
-
-<details>
-  <summary>PeterJarvis</summary>
-
-  ```bash
-  git clone https://huggingface.co/Xerror/XTTS-v2_PeterJarvis
-  ```
-</details>
-
-<details>
-  <summary>S_Dogg</summary>
-
-  ```bash
-  git clone https://huggingface.co/Xerror/XTTS-v2_S_Dogg
-  ```
-</details>
-
-<details>
-  <summary>SamuelL</summary>
-
-  ```bash
-  git clone https://huggingface.co/Xerror/XTTS-v2_SamuelL
-  ```
-</details>
-
----
-
-**Or download all models at once**:
-
+### Step 1: Create a Directory for Whisper Models
 ```bash
-git clone https://huggingface.co/Xerror/XTTS-v2_models
+mkdir faster_whisper_models
 ```
 
+<details>
+  <summary>Whisper Tiny.en</summary>
+
+  ```bash
+  git clone https://huggingface.co/Systran/faster-whisper-tiny.en faster_whisper_models/tiny
+  ```
+</details>
+
+<details>
+  <summary>Whisper Base.en</summary>
+
+  ```bash
+  git clone https://huggingface.co/Systran/faster-whisper-base.en faster_whisper_models/base.en
+  ```
+</details>
+
+<details>
+  <summary>Whisper Small.en</summary>
+
+  ```bash
+  git clone https://huggingface.co/Systran/faster-whisper-small.en faster_whisper_models/small.en
+  ```
+</details>
+
+<details>
+  <summary>Whisper Medium.en</summary>
+
+  ```bash
+  git clone https://huggingface.co/Systran/faster-whisper-medium.en faster_whisper_models/medium.en
+  ```
+</details>
+
+<details>
+  <summary>Whisper Large.en</summary>
+
+  ```bash
+  git clone https://huggingface.co/Systran/faster-whisper-large-v2 faster_whisper_models/large.en
+  ```
+</details>
+
 ---
+
+### Step 6: Download XTTS models
+```bash
+python download_models.py
+```
 
 ### Step 6: Run the Main Script
 ```bash
