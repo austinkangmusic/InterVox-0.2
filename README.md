@@ -1,5 +1,3 @@
-My bad! Here's the updated version with the `mkdir` step included:
-
 ---
 
 # 🚀 **InterVox-0.2 Installation Guide**
@@ -43,7 +41,15 @@ mkdir faster_whisper_models
   <summary>Whisper Tiny.en</summary>
 
   ```bash
-  git clone https://huggingface.co/Systran/faster-whisper-tiny.en faster_whisper_models/tiny
+  git clone https://huggingface.co/Systran/faster-whisper-tiny.en faster_whisper_models/tiny.en
+  ```
+</details>
+
+<details>
+  <summary>Whisper Tiny</summary>
+
+  ```bash
+  git clone https://huggingface.co/Systran/faster-whisper-tiny faster_whisper_models/tiny
   ```
 </details>
 
@@ -56,10 +62,26 @@ mkdir faster_whisper_models
 </details>
 
 <details>
+  <summary>Whisper Base</summary>
+
+  ```bash
+  git clone https://huggingface.co/Systran/faster-whisper-base faster_whisper_models/base
+  ```
+</details>
+
+<details>
   <summary>Whisper Small.en</summary>
 
   ```bash
   git clone https://huggingface.co/Systran/faster-whisper-small.en faster_whisper_models/small.en
+  ```
+</details>
+
+<details>
+  <summary>Whisper Small</summary>
+
+  ```bash
+  git clone https://huggingface.co/Systran/faster-whisper-small faster_whisper_models/small
   ```
 </details>
 
@@ -72,10 +94,34 @@ mkdir faster_whisper_models
 </details>
 
 <details>
-  <summary>Whisper Large.en</summary>
+  <summary>Whisper Medium</summary>
 
   ```bash
-  git clone https://huggingface.co/Systran/faster-whisper-large-v2 faster_whisper_models/large.en
+  git clone https://huggingface.co/Systran/faster-whisper-medium faster_whisper_models/medium
+  ```
+</details>
+
+<details>
+  <summary>Whisper Large-v2</summary>
+
+  ```bash
+  git clone https://huggingface.co/Systran/faster-whisper-large-v2 faster_whisper_models/large-v2
+  ```
+</details>
+
+<details>
+  <summary>Whisper Large-v1</summary>
+
+  ```bash
+  git clone https://huggingface.co/Systran/faster-whisper-large-v1 faster_whisper_models/large-v1
+  ```
+</details>
+
+<details>
+  <summary>Whisper Large-v3</summary>
+
+  ```bash
+  git clone https://huggingface.co/Systran/faster-whisper-large-v3 faster_whisper_models/large-v3
   ```
 </details>
 
