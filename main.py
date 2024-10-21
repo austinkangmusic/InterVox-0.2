@@ -1,52 +1,61 @@
 import os
 
 # Path to the folder containing models
-directory = "XTTS-v2_models"
+model_directory = "XTTS-v2_models"
 
-# Get all directories starting with 'XTTS-v2_'
-try:
-    model_dirs = [d for d in os.listdir(directory) if d.startswith('XTTS-v2_')]
-    if not model_dirs:
-        raise FileNotFoundError("No model directories found in the XTTS-v2_models folder.")
-except FileNotFoundError as e:
-    print(e)
-    exit(1)
-
-# Display available models
-print("Available models:")
-for i, model in enumerate(model_dirs, 1):
-    print(f"{i}. Model: {model}")
-
-# Ask user for model selection with error handling
-while True:
+# Function to detect available models in the folder
+def get_available_models():
     try:
-        model_choice = int(input("\nSelect a model by number: "))
-        if model_choice < 1 or model_choice > len(model_dirs):
-            raise ValueError("Invalid selection. Please choose a number from the available models.")
-        break  # Exit loop if a valid model is selected
-    except ValueError as e:
-        print(e)
+        # List all directories in the model directory and filter by the pattern 'XTTS-v2_'
+        available_models = [d.replace('XTTS-v2_', '') for d in os.listdir(model_directory) 
+                            if os.path.isdir(os.path.join(model_directory, d)) and d.startswith('XTTS-v2_')]
+        return available_models
+    except FileNotFoundError:
+        print("Error: Model directory not found.")
+        exit(1)
 
-selected_model = model_dirs[model_choice - 1]
+# Function to ask the user for the model
+def ask_for_model():
+    available_models = get_available_models()
 
-# Automatically assign the speaker based on the model
-selected_speaker = f"voice_{selected_model.replace('XTTS-v2_', '')}"
+    if not available_models:
+        print("No models found in the directory.")
+        exit(1)
 
-# Check if the speaker directory exists
-speaker_path = os.path.join(directory, selected_model, selected_speaker)
-if not os.path.exists(speaker_path):
-    print(f"\nError: Speaker directory '{selected_speaker}' does not exist in model '{selected_model}'.")
-    exit(1)
+    print("Please select a model from the following list:")
+    for i, model in enumerate(available_models, 1):
+        print(f"{i}. {model}")
 
-print(f"\nSelected Model: {selected_model}")
-print(f"Selected Speaker: {selected_speaker}")
+    while True:
+        try:
+            choice = int(input("Enter the number of the model you want to use: "))
+            if 1 <= choice <= len(available_models):
+                selected_model = available_models[choice - 1]
+                print(f"You selected: {selected_model}")
+                return selected_model
+            else:
+                print("Invalid choice. Please choose a valid model number.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+# Function to save the model name to a file
+def save_model_to_file(model_name):
+    # Create the directory if it doesn't exist
+    os.makedirs("statuses", exist_ok=True)
+
+    # Save the selected model to statuses/whisper_model_name.txt
+    file_path = "statuses/speaker_name.txt"
+    with open(file_path, "w") as file:
+        file.write(model_name)
+        
+# Get the selected model and save it
+selected_model = ask_for_model()
+save_model_to_file(selected_model)
 
 
 print("--------------------------------------------------------")
 
 
-with open("statuses/speaker_name.txt", "w") as file:
-    file.write(selected_speaker)
 
 
 
@@ -103,27 +112,11 @@ def save_model_to_file(model_name):
     file_path = "statuses/whisper_model_name.txt"
     with open(file_path, "w") as file:
         file.write(model_name)
-    print(f"Model '{model_name}' saved to {file_path}")
 
 # Get the selected model and save it
 selected_model = ask_for_model()
 save_model_to_file(selected_model)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+print("--------------------------------------------------------")
 
 
 import os
