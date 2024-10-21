@@ -1,4 +1,7 @@
-<img src="photo.png" width="500"/>
+<img src="photo.png" width="500" style="float: left; margin-right: 20px;"/>
+<p style="font-size: 16px;">
+  This system is an advanced TTS and STT setup that allows interruptions both ways. It uses <strong>faster-whisper</strong> for Speech-to-Text (STT) and <strong>Coqui-TTS</strong> for Text-to-Speech (TTS), enabling a dynamic interaction where you can interrupt and be interrupted seamlessly.
+</p>
 
 ---
 
