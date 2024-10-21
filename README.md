@@ -1,3 +1,5 @@
+![Logo](photo.png)
+
 ### **🚀 1. Repository Setup:**
 - **Clone the Repository**  
    ```bash
