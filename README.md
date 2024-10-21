@@ -1,42 +1,57 @@
-# 🚀 **InterVox-0.2 Installation Guide**
+### **Repository Setup:**
+1. **Clone the Repository**  
+   ```bash
+   git clone https://github.com/austinkangmusic/InterVox-0.2.git
+   ```
 
-### Step 1: Clone the **InterVox-0.2** Repository
-```bash
-git clone https://github.com/austinkangmusic/InterVox-0.2.git
-```
+2. **Navigate to the Project Directory**  
+   ```bash
+   cd InterVox-0.2
+   ```
 
-### Step 2: Navigate to the Project Directory
-```bash
-cd InterVox-0.2
-```
+### **Virtual Environment Setup:**
+3. **Set Up Virtual Environment (No Activation)**  
+   ```bash
+   & "D:\Private Server\Apps\PYTHON VERSIONS\python310\python.exe" -m venv venv
+   ```
 
-### Step 3: Set Up and Activate Virtual Environment
-```bash
-& "D:\Private Server\Apps\PYTHON VERSIONS\python310\python.exe" -m venv venv
-venv/Scripts/Activate
-```
+4. **Verify Python Executable Path**  
+   ```bash
+   Resolve-Path .\venv\Scripts\python.exe
+   ```
 
-### Step 4: Verify Python Executable Path
-```bash
-Resolve-Path .\venv\Scripts\python.exe
-```
+5. **Check Python Version (Should be 3.10.0)**  
+   ```bash
+   .\venv\Scripts\python.exe --version
+   ```
 
-### Step 5: Install Dependencies
-```bash
-pip install -r requirements.txt
-```
+6. **Find Python Executable Path (in VS Code)**  
+   Use VS Code to select the correct Python interpreter from `venv/Scripts/python.exe`.
 
-### Step 6: Download faster-whisper models
-```bash
-python download_faster_whisper_models.py
-```
+7. **Activate Virtual Environment**  
+   ```bash
+   venv/Scripts/Activate
+   ```
 
-### Step 7: Download XTTS models
-```bash
-python download_models.py
-```
+### **Dependencies Installation:**
+8. **Install Required Dependencies**  
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Step 8: Run the Main Script
-```bash
-python main.py
-```
+### **Model Downloads:**
+9. **Download Faster-Whisper Models**  
+   ```bash
+   python download_faster_whisper_models.py
+   ```
+
+10. **Download XTTS Models**  
+    ```bash
+    python download_models.py
+    ```
+
+### **Running the Main Script:**
+11. **Run the Main Script**  
+    ```bash
+    python main.py
+    ```
