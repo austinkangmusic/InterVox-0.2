@@ -133,3 +133,5 @@ def start(whisper_model, use_recording=True):
 
 # while True:
 #     start(whisper_model)
+
+# print('transcribe.py')
