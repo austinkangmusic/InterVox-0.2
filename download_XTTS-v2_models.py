@@ -6,16 +6,11 @@ import threading
 import shutil
 import stat
 import time
+import json
 
-# Define the models and their corresponding URLs
-models = {
-    "Yuki-Chan": "https://huggingface.co/Xerror/XTTS-v2_Yuki-Chan",
-    "C3PO": "https://huggingface.co/Xerror/XTTS-v2_C3PO",
-    "Pain": "https://huggingface.co/Xerror/XTTS-v2_pain",
-    "PeterJarvis": "https://huggingface.co/Xerror/XTTS-v2_PeterJarvis",
-    "S_Dogg": "https://huggingface.co/Xerror/XTTS-v2_S_Dogg",
-    "SamuelL": "https://huggingface.co/Xerror/XTTS-v2_SamuelL"
-}
+# Load the models from models_list.json
+with open('models_list.json', 'r') as file:
+    models = json.load(file)
 
 # Dictionary to keep track of download status
 download_status = {model: None for model in models}
