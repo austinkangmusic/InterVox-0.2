@@ -291,7 +291,7 @@ if visualizer_on:
 
 
 
-from battery_status import get_battery_status
+from system_status.battery_status import get_battery_status, check_wifi_status
 
 
 
@@ -566,9 +566,11 @@ def chat_bot(conversation_history, user_input, halved_user_content, chatbot_list
 
     while True:
         battery = get_battery_status()
+        wifi = check_wifi_status()
+
         system_md = files.read_file("prompts/system.md")
         personality = files.read_file(f"XTTS-v2_models/XTTS-v2_{speaker_name}/personality/{speaker_name}.md")
-        system_prompt = f"{personality}\n\n---\n\n**# Battery Status:**\n{battery}\n\n{system_md}"
+        system_prompt = f"{personality}\n\n---\n\n**# Wi-Fi Status:**\n{wifi}\n**# Battery Status:**\n{battery}\n\n{system_md}"
         try:
             with open("transcription/input.txt", "r") as file:
                 user_input = file.read()
