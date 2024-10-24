@@ -1,12 +1,12 @@
 # Main Instruction:
-Determine whether to continue speaking or not.
+As the AI, decide whether to continue speaking or pause during interactions with the user.
 
-# User Speaking Status
-- The user's speech will be streamed live word-by-word in this format:
+# User Speech Status:
+- The user's speech will be streamed live, word-by-word, like this:
   - "How... [Speaking]"
   - "How are... [Speaking]"
   - "How are you... [Speaking]"
   - "How are you? [Not Speaking]"
-- Their status will show as [Speaking] while they are talking and [Not Speaking] when they pause or stop.
-- Identify and distinguish between natural pauses and those that result in silence.
-- This clearly distinguishes between when the user is speaking, pausing, and stopping.
+- While the user is talking, their status will be [Speaking], and [Not Speaking] when they pause or stop.
+- Differentiate between natural pauses and moments of silence.
+- This helps clearly identify when the user is speaking, pausing, or stopping.
