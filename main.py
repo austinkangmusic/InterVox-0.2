@@ -2,8 +2,7 @@ import os
 import threading
 
 #IMPORTANT PARAMETER!!!
-active_listening = False
-
+active_listening = True
 
 # Path to the folder containing models
 model_directory = "XTTS-v2_models"
@@ -235,7 +234,6 @@ def input_simulation():
                         file.write('')  
         input_lol = threading.Thread(target=input_threading_lol)
         input_lol.start()
-
 
 # input_simulation()
 
@@ -626,8 +624,6 @@ def chat_bot(conversation_history, user_input, halved_user_content, chatbot_list
             with open("statuses/chatbot_replied.txt", "w") as file:
                 file.write('true')
 
-
-
         tool_name, tool_args = chat_utils.extract_tool_info(chatbot_response)
 
         # Ensure tool_name is not None before writing
@@ -729,7 +725,7 @@ def chat_bot(conversation_history, user_input, halved_user_content, chatbot_list
                     with open("transcription/input.txt", "r") as file:
                         spoken_user_input = file.read()
 
-                    speak_system_prompt = f"{personality}\n\n{speak_system_md}\n{speak_status_md}\n{conversation_history}\nCurrent spoken words by you: '{spoken_ai_response}'\nCurrent spoken words by the user: '{spoken_user_input}'"
+                    speak_system_prompt = f"{personality}\n{speak_system_md}\n{speak_status_md}\n{conversation_history}\nCurrent spoken words by you: '{spoken_ai_response}'\nCurrent spoken words by the user: '{spoken_user_input}'"
                     with open("speak_system_prompt.txt", "w") as file:
                         file.write(speak_system_prompt)   
 
@@ -800,10 +796,10 @@ def run_thread():
         chatbot_listening = file.read()
 
 
-    simulation = threading.Thread(target=input_simulation)
-    simulation.start()
-    # real_time_transcription = threading.Thread(target=execute)
-    # real_time_transcription.start()
+    # simulation = threading.Thread(target=input_simulation)
+    # simulation.start()
+    real_time_transcription = threading.Thread(target=execute)
+    real_time_transcription.start()
 
     chat_bot(conversation_history, user_input, halved_user_content, chatbot_listening, chatbot_response)
 
@@ -824,10 +820,10 @@ def run_thread_stop():
         chatbot_listening = file.read()
 
 
-    simulation = threading.Thread(target=input_simulation)
-    simulation.start()
-    # real_time_transcription = threading.Thread(target=execute)
-    # real_time_transcription.start()
+    # simulation = threading.Thread(target=input_simulation)
+    # simulation.start()
+    real_time_transcription = threading.Thread(target=execute)
+    real_time_transcription.start()
 
     while True:
         time.sleep(1)
