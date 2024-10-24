@@ -7,7 +7,7 @@ from pprint import pprint
 import torch
 from initialize_whisper import initialize_whisper_model
 from silero_vad import (load_silero_vad, read_audio, get_speech_timestamps, save_audio, VADIterator, collect_chunks)
-from monitor_voice import start
+from record_live import record_audio
 # from chatbot import run
 import threading
 import queue
@@ -52,54 +52,7 @@ def get_sgt_time():
 
 
 
-# Function to process full audio and convert segments to time
-def process_full_audio(audio_file):
-    # print(f"Processing full audio file: {audio_file}")
-    try:
-        wav = read_audio(audio_file, sampling_rate=sampling_rate)
-        # print("Audio file read successfully.")
-    except RuntimeError as e:
-        if 'sox extension is not supported on Windows' in str(e):
-            # print("Error: Sox is not supported on Windows. Please use a compatible backend.")
-            return
-        else:
-            # print(f"Runtime error while reading audio: {e}")
-            return
-    except Exception as e:
-        # print(f"Exception while reading audio: {e}")
-        return
-    
-    # Get speech timestamps from full audio file
-    # print("Getting speech timestamps...")
-    speech_timestamps = get_speech_timestamps(wav, model, sampling_rate=sampling_rate)
-    # print(f"Found {len(speech_timestamps)} speech segments.")
 
-    # Collect and save speech chunks
-    try:
-        valid_speech_chunks = []
-        
-        for idx, segment in enumerate(speech_timestamps):
-            start_sample = segment['start']
-            end_sample = segment['end']
-            
-            # Extract the chunk based on the start and end timestamps
-            chunk = wav[start_sample:end_sample]
-            
-            # Only keep valid chunks (non-empty)
-            if chunk.numel() > 0:
-                valid_speech_chunks.append(chunk)
-                # print(f"Valid chunk collected: {start_sample} to {end_sample}")
-
-        if len(valid_speech_chunks) == 0:
-            # print("No valid speech chunks found.")
-            return
-        
-        # Concatenate and save the valid chunks
-        # print("Saving valid speech chunks...")
-        save_audio('only_speech.wav', torch.cat(valid_speech_chunks), sampling_rate=sampling_rate)
-        # print("Speech chunks saved successfully as 'only_speech.wav'.")
-    except Exception as e:
-        print(f"An error occurred while saving audio: {e}")
 
 # Function to transcribe audio using Whisper model
 def transcribe_with_whisper(audio_file, whisper_model):
@@ -131,9 +84,7 @@ def process_and_transcribe(audio_file, whisper_model):
 
         # You can now use the voice_detected variable in your program
 
-        if voice_detected.lower() == 'true':
-            with open("statuses/locked.txt", "w") as file:
-                file.write('Not Delete')                        
+        if voice_detected.lower() == 'true':                
             user_start_time = get_sgt_time()
 
             while True:
@@ -152,8 +103,7 @@ def process_and_transcribe(audio_file, whisper_model):
                 except FileNotFoundError:
                     pause_detected = ""
 
-                # print('process_full_audio ongoing...')
-                process_full_audio(audio_file)
+
                 # print('process_full_audio completed...')
                 user_latest_word_time = get_sgt_time()
 
@@ -162,7 +112,8 @@ def process_and_transcribe(audio_file, whisper_model):
                 if voice_detected.lower() == 'true' and pause_detected.lower() == 'false':
                     if user_input:
                         user_input = f'(start time: {user_start_time}) {user_input}... [Speaking] (latest word time: {user_latest_word_time})'
-
+                        with open("statuses/chatbot_replied.txt", "w") as file:
+                            file.write('false')
                         # Save transcription to a file
                         try:
                             with open("transcription/input.txt", "w") as file:
@@ -181,18 +132,6 @@ def process_and_transcribe(audio_file, whisper_model):
                             file.write(user_input)
                     break
                 
-        else:
-            with open("statuses/locked.txt", "r") as file:
-                locked = file.read()    
-            with open("statuses/spoken_user.txt", "r") as file:
-                spoken_user_lockings = file.read()                   
-                if locked.lower() == 'delete':
-                    with open("transcription/input.txt", "w") as file:
-                        file.write('') 
-                if '[Not Speaking]' in spoken_user_lockings:
-                    with open("transcription/input.txt", "w") as file:
-                        file.write('')                     
-
 
 # Queue for audio files
 audio_queue = queue.Queue()
@@ -236,7 +175,7 @@ def execute():
 
     try:
         # Start processing
-        start()
+        record_audio()
 
         # Optionally, wait for all processing to complete
         audio_queue.join()
