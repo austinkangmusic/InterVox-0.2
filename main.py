@@ -748,7 +748,9 @@ def chat_bot(conversation_history, user_input, halved_user_content, chatbot_list
                         speak_status = True
                         with open("statuses/speak_status.txt", "w") as file:
                             file.write('true')       
-                        if not playback_active:      
+                        if not playback_active:   
+                            with open("statuses/speak_status.txt", "w") as file:
+                               file.write('false')      
                             if spoken_user_input != '':  
                                 finished_speaking_system = f"You have finished speaking; however, the user has overlapped your words with their own.\nYour thoughts: {thoughts_str}\nYour spoken words: {spoken_ai_response}\nThe user's spoken words: {spoken_user_input}"
                                 conversation_history.append({"role": "system", "content": finished_speaking_system})   
