@@ -291,9 +291,8 @@ if visualizer_on:
 
 
 
-from system_status.battery_status import get_battery_status, check_wifi_status
-
-
+from system_status.battery_status import get_battery_status
+from system_status.wifi_status import check_wifi_status
 
 
 
