@@ -1,11 +1,61 @@
+#IMPORTANT PARAMETER!!!
+active_listening = False
+simulated_input = True
+reset_memories = True
+use_default_model = True
 import os
 import threading
 
-#IMPORTANT PARAMETER!!!
-active_listening = True
-
 # Path to the folder containing models
 model_directory = "XTTS-v2_models"
+
+
+
+def reset_memory():
+    with open("statuses/speak_status.txt", "w") as file:
+        file.write('false')  
+
+    with open("statuses/playback_active.txt", "w") as file:
+        file.write('false')   
+
+    with open("transcription/input.txt", "w") as file:
+        file.write('')
+
+    with open("donottouch/user_input.txt", "w") as file:
+        file.write('')
+
+
+    with open("donottouch/halved_user_content.txt", "w") as file:
+        file.write('')
+
+    with open("donottouch/chatbot_response.txt", "w") as file:
+        file.write('')
+
+    with open("donottouch/chatbot_listening.txt", "w") as file:
+        file.write('')      
+
+    with open("conversation_history.txt", "w") as file:
+        file.write('')      
+
+    print('Memory has been resetted.')
+
+if reset_memories:
+    reset_memory()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Function to detect available models in the folder
 def get_available_models():
@@ -53,11 +103,16 @@ def save_model_to_file(model_name):
         file.write(model_name)
         
 # Get the selected model and save it
-speaker_name = ask_for_model()
-save_model_to_file(speaker_name)
+if not use_default_model:
+    speaker_name = ask_for_model()
+    save_model_to_file(speaker_name)
+    print("--------------------------------------------------------")
+else:
+    with open("statuses/speaker_name.txt", "r") as file:
+        speaker_name = file.read()
 
 
-print("--------------------------------------------------------")
+
 
 
 
@@ -118,40 +173,20 @@ def save_model_to_file(model_name):
         file.write(model_name)
 
 # Get the selected model and save it
-selected_model = ask_for_model()
-save_model_to_file(selected_model)
-print("--------------------------------------------------------")
+if not use_default_model:
+    selected_model = ask_for_model()
+    save_model_to_file(selected_model)
+    print("--------------------------------------------------------")
+else:
+    with open("statuses/whisper_model_name.txt", "r") as file:
+        selected_model = file.read()
 
+    print("--------------------------------------------------------")
+    print(f"Using default models.\nTTS: '{speaker_name}'\nSTT: '{selected_model}'")
+    print("--------------------------------------------------------")
 
 import os
 os.environ['TRANSFORMERS_NO_TF'] = '1'
-
-with open("statuses/speak_status.txt", "w") as file:
-    file.write('false')  
-
-with open("statuses/playback_active.txt", "w") as file:
-    file.write('false')   
-
-with open("transcription/input.txt", "w") as file:
-    file.write('')
-
-with open("donottouch/user_input.txt", "w") as file:
-    file.write('')
-
-
-with open("donottouch/halved_user_content.txt", "w") as file:
-    file.write('')
-
-with open("donottouch/chatbot_response.txt", "w") as file:
-    file.write('')
-
-with open("donottouch/chatbot_listening.txt", "w") as file:
-    file.write('')      
-
-with open("conversation_history.txt", "w") as file:
-    file.write('')      
-
-print('reset')
 
 
 from thread import execute
@@ -212,7 +247,7 @@ def input_simulation():
             with open("transcription/input.txt", "w") as file:
                 file.write(f'(start time: {user_start_time}) ' + current_content.strip() + f"... [Speaking] (latest word time: {user_latest_word_time})\n")  # Add [Speaking] after each incremental addition
             
-            time.sleep(1)  # Wait 2 seconds before adding the next word
+            time.sleep(0.25)  # Wait 2 seconds before adding the next word
 
         user_latest_word_time = get_sgt_time()
 
@@ -294,7 +329,6 @@ if visualizer_on:
 from system_status.battery_status import get_battery_status
 from system_status.wifi_status import check_wifi_status
 from system_status.system_status import get_system_status
-
 
 
 
@@ -563,7 +597,6 @@ def chat_bot(conversation_history, user_input, halved_user_content, chatbot_list
         except json.JSONDecodeError as e:
             print(f"Error parsing line: {line}, error: {e}")
 
-
     while True:
         battery = get_battery_status()
         wifi = check_wifi_status()
@@ -659,7 +692,11 @@ def chat_bot(conversation_history, user_input, halved_user_content, chatbot_list
 
 
 
-        text_to_save = tool_args.get('text', '')
+        if tool_args is not None:
+            text_to_save = tool_args.get('text', '')
+        else:
+            text_to_save = ''   
+
         save_response(text_to_save)
         # print(chatbot_response)
 
@@ -727,6 +764,8 @@ def chat_bot(conversation_history, user_input, halved_user_content, chatbot_list
                         
                     with open("transcription/input.txt", "r") as file:
                         spoken_user_input = file.read()
+                    if spoken_user_input == '':
+                        spoken_user_input = 'none'
 
                     speak_system_prompt = f"{personality}\n{speak_system_md}\n{speak_status_md}\n{conversation_history}\nCurrent spoken words by you: '{spoken_ai_response}'\nCurrent spoken words by the user: '{spoken_user_input}'"
                     with open("speak_system_prompt.txt", "w") as file:
@@ -787,6 +826,7 @@ def chat_bot(conversation_history, user_input, halved_user_content, chatbot_list
 import threading
 
 def run_thread():
+    global simulated_input
     if visualizer_on:
         visualizer_thread = threading.Thread(target=run_visualizer)
         visualizer_thread.start()
@@ -800,17 +840,19 @@ def run_thread():
     with open("donottouch/chatbot_listening.txt", "r") as file:
         chatbot_listening = file.read()
 
-
-    # simulation = threading.Thread(target=input_simulation)
-    # simulation.start()
-    real_time_transcription = threading.Thread(target=execute)
-    real_time_transcription.start()
+    if simulated_input:
+        simulation = threading.Thread(target=input_simulation)
+        simulation.start()
+    else:
+        real_time_transcription = threading.Thread(target=execute)
+        real_time_transcription.start()
 
     chat_bot(conversation_history, user_input, halved_user_content, chatbot_listening, chatbot_response)
 
 
 
 def run_thread_stop():
+    global simulated_input
     if visualizer_on:
         visualizer_thread = threading.Thread(target=run_visualizer)
         visualizer_thread.start()
@@ -825,10 +867,12 @@ def run_thread_stop():
         chatbot_listening = file.read()
 
 
-    # simulation = threading.Thread(target=input_simulation)
-    # simulation.start()
-    real_time_transcription = threading.Thread(target=execute)
-    real_time_transcription.start()
+    if simulated_input:
+        simulation = threading.Thread(target=input_simulation)
+        simulation.start()
+    else:
+        real_time_transcription = threading.Thread(target=execute)
+        real_time_transcription.start()
 
     while True:
         time.sleep(1)
