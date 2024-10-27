@@ -2,7 +2,38 @@
 active_listening = True
 simulated_input = False
 reset_memories = False
-use_default_model = False
+use_default_model = True
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if use_default_model:
+    with open('statuses/default_model_setting.txt', 'r') as file:
+        default_model_setting = file.read()
+else:
+    with open('statuses/default_model_setting.txt', "w") as file:
+        file.write('false') 
+    with open('statuses/default_model_setting.txt', 'r') as file:
+        default_model_setting = file.read()
+
+if default_model_setting == 'true':
+    use_default_model = True
+else:
+    use_default_model = False
+
 import os
 import threading
 
@@ -36,8 +67,9 @@ def reset_memory():
 
     with open("conversation_history.txt", "w") as file:
         file.write('')      
-
+    print("--------------------------------------------------------")
     print('Memory has been resetted.')
+    print("--------------------------------------------------------")
 
 if reset_memories:
     reset_memory()
@@ -120,7 +152,6 @@ else:
 
 
 
-
 import os
 
 import os
@@ -177,11 +208,39 @@ if not use_default_model:
     selected_model = ask_for_model()
     save_model_to_file(selected_model)
     print("--------------------------------------------------------")
+    while True:
+
+        default_model_answer = input(
+            "Would you like to set these models as your default? Please reply with:\n"
+            "1. Yes\n"
+            "2. No\n"
+            "Your choice: "
+        )
+
+        if default_model_answer == "1":
+            print("--------------------------------------------------------")
+            print("You have set the models as your default.")
+            print("--------------------------------------------------------")
+
+            with open('statuses/default_model_setting.txt', "w") as file:
+                file.write('true')        
+            break
+        elif default_model_answer == "2":
+            print("--------------------------------------------------------")
+            print("The models will not be set as your default.")
+            print("--------------------------------------------------------")
+           
+            with open('statuses/default_model_setting.txt', "w") as file:
+                file.write('false') 
+            break            
+        else:
+            print("--------------------------------------------------------")
+            print("Invalid input. Please enter 1 for Yes or 2 for No.")
+
 else:
     with open("statuses/whisper_model_name.txt", "r") as file:
         selected_model = file.read()
 
-    print("--------------------------------------------------------")
     print(f"Using default models.\nTTS: '{speaker_name}'\nSTT: '{selected_model}'")
     print("--------------------------------------------------------")
 
@@ -700,8 +759,8 @@ def chat_bot(conversation_history, user_input, halved_user_content, chatbot_list
         save_response(text_to_save)
         # print(chatbot_response)
 
-        if len(conversation_history) > 20:
-            conversation_history = conversation_history[-20:]
+        if len(conversation_history) > 50:
+            conversation_history = conversation_history[-50:]
 
 
         # Open a file in write mode
