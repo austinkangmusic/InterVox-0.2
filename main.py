@@ -1,8 +1,8 @@
 #IMPORTANT PARAMETER!!!
-active_listening = False
-simulated_input = True
-reset_memories = True
-use_default_model = True
+active_listening = True
+simulated_input = False
+reset_memories = False
+use_default_model = False
 import os
 import threading
 
