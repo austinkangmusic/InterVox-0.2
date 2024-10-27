@@ -59,7 +59,7 @@ def record_audio(filename='audios/input.wav', channels=1, rate=RECORDING_RATE, c
         # Initialize an empty list to hold audio frames
         vad_buffer = np.array([], dtype=np.int16)  # Buffer for VAD processing
 
-        print("Recording... Press Ctrl+C to stop.")
+        print("Monitoring Voice...")
         try:
             while True:
                 data = stream.read(chunk)
@@ -171,45 +171,6 @@ def record_audio(filename='audios/input.wav', channels=1, rate=RECORDING_RATE, c
                     wf.setsampwidth(audio.get_sample_size(pyaudio.paInt16))
                     wf.setframerate(rate)
 
-#DONE!!!!!
-####PHASE 1####
-#If [Not Speaking] before speak status and chatbot_replied is true, user_input will be emptied
-#speak_status = false
-#user_input = [Not Speaking]
-#chatbot_replied = true
-
-#If [Not Speaking] before speak status and chatbot_replied is false, it will show user_input
-#speak_status = false
-#user_input = [Not Speaking]
-#chatbot_replied = false
-
-
-
-####PHASE 2####
-
-#EMPTY USER INPUT AFTER SPEAK-PHASE
-
-#If [Not Speaking] during speak phase, and playback_active = true, it will show user_input
-#conditions:
-#playback_active = True
-#speak_status = True
-#user_input = [Not Speaking]
-
-#If [Not Speaking] during speak phase, and playback_active = false, user_input will be emptied during non-speak phase
-#conditions:
-#playback_active = False
-#speak_status = False
-#user_input = [Not Speaking]
-
-
-#DONT EMPTY USER INPUT AFTER SPEAK-BASE
-
-#If [Speaking] during speak phase, and playback_active = false, it will show user_input during non-speak phase
-#conditions:
-#playback_active = False
-#speak_status = False
-#user_input = [Speaking]
-
         except KeyboardInterrupt:
             print("Recording stopped.")
 
@@ -221,4 +182,5 @@ def record_audio(filename='audios/input.wav', channels=1, rate=RECORDING_RATE, c
         print(f"Audio recorded and saved as {filename}")
 
 # record_audio()
-print('record_live.py')
+# print('record_live.py')
+
