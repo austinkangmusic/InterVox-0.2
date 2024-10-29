@@ -495,11 +495,15 @@ def write_file_in_real_time(word_timestamps, output_file_path):
 
     # Print word-level timestamps in real time
     while last_word_index < len(word_timestamps):
+        time.sleep(0.01)  # Sleep for 10ms
+
         current_time = time.time() - start_time
         
         # Check if any word's start time has been reached
         while (last_word_index < len(word_timestamps) and 
                 word_timestamps[last_word_index]['start'] <= current_time):
+            time.sleep(0.01)  # Sleep for 10ms
+                    
             # Get the current word
             word_info = word_timestamps[last_word_index]
             current_transcription += word_info['word'] + " "  # Add the word to current transcription
