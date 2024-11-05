@@ -13,13 +13,6 @@
 
 ---
 
-```markdown
-# Project Name
-
-Welcome to **Project Name**! This README will guide you through setting up the project environment and getting the main script up and running.
-
----
-
 ## 📂 1. Repository Setup
 
 ### Clone the Repository
