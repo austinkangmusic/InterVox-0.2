@@ -1,12 +1,46 @@
 #IMPORTANT PARAMETER!!!
 active_listening = True
 simulated_input = False
-reset_memories = True
-use_low_tts = True
+reset_memories = False
+use_default_model = True
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if use_default_model:
+    with open('statuses/default_model_setting.txt', 'r') as file:
+        default_model_setting = file.read()
+else:
+    with open('statuses/default_model_setting.txt', "w") as file:
+        file.write('false') 
+    with open('statuses/default_model_setting.txt', 'r') as file:
+        default_model_setting = file.read()
+
+if default_model_setting == 'true':
+    use_default_model = True
+else:
+    use_default_model = False
 
 import os
 import threading
-import json
+
+# Path to the folder containing models
+model_directory = "XTTS-v2_models"
+
+
 
 def reset_memory():
     with open("statuses/speak_status.txt", "w") as file:
@@ -40,22 +74,186 @@ def reset_memory():
 if reset_memories:
     reset_memory()
 
-# Save the selected model to statuses/whisper_model_name.txt
-file_path = "statuses/speaker_name.txt"
-with open(file_path, "w") as file:
-    file.write('NOVA')
 
 
-with open('statuses/speaker_name.txt', 'r') as file:
-    speaker_name = file.read()
 
+
+
+
+
+
+
+
+
+
+
+
+
+# Function to detect available models in the folder
+def get_available_models():
+    try:
+        # List all directories in the model directory and filter by the pattern 'XTTS-v2_'
+        available_models = [d.replace('XTTS-v2_', '') for d in os.listdir(model_directory) 
+                            if os.path.isdir(os.path.join(model_directory, d)) and d.startswith('XTTS-v2_')]
+        return available_models
+    except FileNotFoundError:
+        print("Error: Model directory not found.")
+        exit(1)
+
+# Function to ask the user for the model
+def ask_for_model():
+    available_models = get_available_models()
+
+    if not available_models:
+        print("No models found in the directory.")
+        exit(1)
+
+    print("Please select a XTTS model from the following list:")
+    for i, model in enumerate(available_models, 1):
+        print(f"{i}. {model}")
+
+    while True:
+        try:
+            choice = int(input("Enter the number of the model you want to use: "))
+            if 1 <= choice <= len(available_models):
+                selected_model = available_models[choice - 1]
+                print(f"You selected: {selected_model}")
+                return selected_model
+            else:
+                print("Invalid choice. Please choose a valid model number.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
 
 # Function to save the model name to a file
-file_path = "statuses/whisper_model_name.txt"
-with open(file_path, "w") as file:
-    file.write('faster-distil-whisper-tiny.en')
+def save_model_to_file(model_name):
+    # Create the directory if it doesn't exist
+    os.makedirs("statuses", exist_ok=True)
+
+    # Save the selected model to statuses/whisper_model_name.txt
+    file_path = "statuses/speaker_name.txt"
+    with open(file_path, "w") as file:
+        file.write(model_name)
+        
+# Get the selected model and save it
+if not use_default_model:
+    speaker_name = ask_for_model()
+    save_model_to_file(speaker_name)
+    print("--------------------------------------------------------")
+else:
+    with open("statuses/speaker_name.txt", "r") as file:
+        speaker_name = file.read()
+
+
+
+
+
+
+
+
+
+
+import os
+
+import os
+
+# Path to the folder containing models
+model_directory = "faster_whisper_models"
+
+# Function to detect available models in the folder
+def get_available_models():
+    try:
+        # List all directories in the model directory
+        available_models = [d for d in os.listdir(model_directory) if os.path.isdir(os.path.join(model_directory, d))]
+        return available_models
+    except FileNotFoundError:
+        print("Error: Model directory not found.")
+        exit(1)
+
+# Function to ask the user for the model
+def ask_for_model():
+    available_models = get_available_models()
+
+    if not available_models:
+        print("No models found in the directory.")
+        exit(1)
+
+    print("Please select a faster-whisper model from the following list:")
+    for i, model in enumerate(available_models, 1):
+        print(f"{i}. {model}")
+
+    while True:
+        try:
+            choice = int(input("Enter the number of the model you want to use: "))
+            if 1 <= choice <= len(available_models):
+                selected_model = available_models[choice - 1]
+                print(f"You selected: {selected_model}")
+                return selected_model
+            else:
+                print("Invalid choice. Please choose a valid model number.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+# Function to save the model name to a file
+def save_model_to_file(model_name):
+    # Create the directory if it doesn't exist
+    os.makedirs("statuses", exist_ok=True)
+
+    # Save the selected model to statuses/whisper_model_name.txt
+    file_path = "statuses/whisper_model_name.txt"
+    with open(file_path, "w") as file:
+        file.write(model_name)
+
+# Get the selected model and save it
+if not use_default_model:
+    selected_model = ask_for_model()
+    save_model_to_file(selected_model)
+    print("--------------------------------------------------------")
+    while True:
+
+        default_model_answer = input(
+            "Would you like to set these models as your default? Please reply with:\n"
+            "1. Yes\n"
+            "2. No\n"
+            "Your choice: "
+        )
+
+        if default_model_answer == "1":
+            print("--------------------------------------------------------")
+            print("You have set the models as your default.")
+            print("--------------------------------------------------------")
+
+            with open('statuses/default_model_setting.txt', "w") as file:
+                file.write('true')        
+            break
+        elif default_model_answer == "2":
+            print("--------------------------------------------------------")
+            print("The models will not be set as your default.")
+            print("--------------------------------------------------------")
+           
+            with open('statuses/default_model_setting.txt', "w") as file:
+                file.write('false') 
+            break            
+        else:
+            print("--------------------------------------------------------")
+            print("Invalid input. Please enter 1 for Yes or 2 for No.")
+
+else:
+    with open("statuses/whisper_model_name.txt", "r") as file:
+        selected_model = file.read()
+
+    print(f"Using default models.\nTTS: '{speaker_name}'\nSTT: '{selected_model}'")
+    print("--------------------------------------------------------")
+
+import os
+os.environ['TRANSFORMERS_NO_TF'] = '1'
+
 
 from thread import execute
+
+
+
+
+
 from datetime import datetime
 import time
 import pytz
@@ -72,21 +270,6 @@ def get_sgt_time():
     # Format time in HH:MM:SS and extended microseconds
     formatted_time = current_time.strftime('%H:%M:%S.') + f'{current_time.microsecond}'
     return formatted_time
-
-
-
-def get_current_time_sgt():
-    # Define Singapore timezone
-    sg_timezone = pytz.timezone("Asia/Singapore")
-
-    # Get current time in Singapore
-    current_time = datetime.now(sg_timezone)
-
-    # Format the output
-    formatted_time = current_time.strftime("System Clock:\nDay: %A\nDate: %Y-%m-%d\nTime: %I:%M:%S.%f %p")
-    
-    return formatted_time
-
 
 #user_start_time = get_sgt_time()
 #user_end_time = get_sgt_time()
@@ -153,17 +336,9 @@ import chat_utils
 import files
 import json
 
+from initialize_tts import initialize_tts_model
 
-
-
-if use_low_tts:
-    import generate_pyttsx3_voice
-else:
-    from initialize_tts import initialize_tts_model
-    import generate_voice
-
-
-
+import generate_voice
 
 # Initialize LLM models
 chat_utils.initialize()
@@ -317,13 +492,6 @@ def write_file_in_real_time(word_timestamps, output_file_path):
     ai_start_time = get_sgt_time()
 
     current_transcription = f"(start time: {ai_start_time})"  # To build the current transcription
-    
-
-    with open("statuses/ai_start_time.txt", "w") as file:
-        file.write(ai_start_time)
-
-
-
 
     # Print word-level timestamps in real time
     while last_word_index < len(word_timestamps):
@@ -347,9 +515,7 @@ def write_file_in_real_time(word_timestamps, output_file_path):
             # Write the current transcription to the file, overwriting it each time
             with open(output_file_path, "w") as file:  # Open in write mode to overwrite
                 file.write(current_transcription.strip() + f' (latest word time: {ai_latest_word_time})')  # Write current transcription without trailing space
-            with open("statuses/ai_latest_word_time.txt", "w") as file:
-                file.write(ai_latest_word_time)
-
+            
             last_word_index += 1
             if not speak_status:
                 break
@@ -368,30 +534,7 @@ def write_file_in_real_time(word_timestamps, output_file_path):
 
 
 
-def stream_system(model, prompt):
-    
-    chunks = []
 
-    # Stream response from the model
-    response_generator = model.stream(prompt)
-    
-    # Iterate through the streamed response
-    for chunk in response_generator:
-        if chunk is None:
-            continue  # Skip if chunk is None
-
-        # Check if chunk is an object and contains content
-        if hasattr(chunk, 'content'):  # Check if chunk has a 'content' attribute
-            delta_content = chunk.content
-            if delta_content is not None:
-                chunks.append(delta_content)
-                print(delta_content, end="", flush=True)
-        elif isinstance(chunk, str):  # If chunk is a string, append directly
-            chunks.append(chunk)
-            print(chunk, end="", flush=True)
-
-    print('\n')
-    return ''.join(chunks)
 
 
 
@@ -403,27 +546,14 @@ def stream_system(model, prompt):
 def stream_response_speak(model, prompt):
     
     chunks = []
-
-    # Stream response from the model
     response_generator = model.stream(prompt)
-    
-    # Iterate through the streamed response
     for chunk in response_generator:
-        if chunk is None:
-            continue  # Skip if chunk is None
+        delta_content = chunk.content
+        if delta_content is not None:
+            chunks.append(delta_content)
 
-        # Check if chunk is an object and contains content
-        if hasattr(chunk, 'content'):  # Check if chunk has a 'content' attribute
-            delta_content = chunk.content
-            if delta_content is not None:
-                chunks.append(delta_content)
-                print(delta_content, end="", flush=True)
-        elif isinstance(chunk, str):  # If chunk is a string, append directly
-            chunks.append(chunk)
-            print(chunk, end="", flush=True)
-
-    print('\n')
     return ''.join(chunks)
+
 
 
 
@@ -434,24 +564,12 @@ def stream_response(model, system_prompt, conversation_history):
     full_conversation = [{"role": "system", "content": system_prompt}] + conversation_history
     
     chunks = []
-    # Stream response from the model
     response_generator = model.stream(full_conversation)
-    
-    # Iterate through the streamed response
     for chunk in response_generator:
-        if chunk is None:
-            continue  # Skip if chunk is None
-
-        # Check if chunk is an object and contains content
-        if hasattr(chunk, 'content'):  # Check if chunk has a 'content' attribute
-            delta_content = chunk.content
-            if delta_content is not None:
-                chunks.append(delta_content)
-                print(delta_content, end="", flush=True)
-        elif isinstance(chunk, str):  # If chunk is a string, append directly
-            chunks.append(chunk)
-            print(chunk, end="", flush=True)
-
+        delta_content = chunk.content
+        if delta_content is not None:
+            chunks.append(delta_content)
+            print(delta_content, end="", flush=True)
     print('\n')
     return ''.join(chunks)
 
@@ -517,186 +635,146 @@ conversation_history = []
 pretty_conversation_history = []
 with open("statuses/locked.txt", "w") as file:
     file.write('Not delete')
-with open("statuses/user_input2.txt", "w") as file:
-    file.write('')          
 
 
-from datetime import datetime
 
-# Get the current time
-current_time = datetime.now()
+def chat_bot(conversation_history, user_input, halved_user_content, chatbot_listening, chatbot_response):
+    global speak_status, playback_active, listening, speaker_name, active_listening
 
-# Format current_time to match the desired last_time format (HH:MM:SS.SSSSSS)
-last_time = current_time.strftime("%H:%M:%S.%f")
-
-# Write last_time to the file
-with open("statuses/seconds.txt", "w") as file:
-    file.write(last_time)
-
-# Calculate the time difference
-# Convert current_time to datetime by adding today's date to match formats
-current_datetime = datetime.combine(datetime.today(), current_time.time())
-
-# Assuming last_time is the same as current time, as formatted above
-last_time_datetime = datetime.strptime(last_time, "%H:%M:%S.%f")
-
-# Calculate the difference
-time_difference = current_datetime - last_time_datetime
-
-# Convert the difference to seconds
-seconds = time_difference.total_seconds()
-
-print(f"Time difference in seconds: {seconds}")
+    # Initialize an empty conversation history
+    conversation_history = []
+    listening = False        
 
 
-def threading_response():
-    global speak_status, conversation_history, playback_active
-    conversation_history_pretty = ''
+    # action_index = 0  # Start with the first action in the sequence
+
+    # Read from conversation_history.txt and store the content into conversation_history
+    with open('conversation_history.txt', 'r') as file:
+        lines = file.readlines()
+
+    # Parse each line to convert from JSON strings to Python objects
+    for line in lines:
+        try:
+            # First, strip newlines, then load the JSON string into Python dict
+            conversation_history.append(json.loads(line.strip()))
+        except json.JSONDecodeError as e:
+            print(f"Error parsing line: {line}, error: {e}")
 
     while True:
-        print('\n\n\n\nconvo\n\n\n\n\n\n', conversation_history_pretty)
-        with open("transcription/input.txt", "r") as file:
-            user_input = file.read()
+        battery = get_battery_status()
+        wifi = check_wifi_status()
+        system = get_system_status()
+
+        system_md = files.read_file("prompts/system.md")
+        personality = files.read_file(f"XTTS-v2_models/XTTS-v2_{speaker_name}/personality/{speaker_name}.md")
+        system_prompt = f"{personality}\n\n---\n\n**# Wi-Fi Status:**\n{wifi}\n**# Battery Status:**\n{battery}\n**# System Status:**\n{system}\n\n{system_md}"
+        try:
+            with open("transcription/input.txt", "r") as file:
+                user_input = file.read()
+                 
+        except:
+            user_input = ''
+        with open("donottouch/user_input.txt", "w") as file:
+            file.write(user_input)
+        with open("statuses/spoken_user.txt", "w") as file:
+            file.write('')    
+
+        # user_input = input('\nUser:\n')
+        conversation_history.append({"role": "user", "content": user_input})
+
+
+        words = user_input.split()  # Split the input into words
+
+        # If there's only one word, just return it
+        if len(words) <= 1:
+            halved_user_content = user_input
+        else:
+            half_index = len(words) // 2  # Calculate the index for half
+            halved_user = ' '.join(words[:half_index])  # Join the first half of words
+            halved_user_content = f'{halved_user}... [Speaking]'
+        with open("donottouch/halved_user_content.txt", "w") as file:
+            file.write(halved_user_content)
+
+
+
+
+
+        
+        # # Stream the response with the system prompt, user input, and conversation history
+        chatbot_response = stream_response(chat_llm, system_prompt, conversation_history)
+
+
+
+
+        # Call the function
+        # chatbot_response, action_index = simulated_stream_response(system_prompt, conversation_history, action_index)
+
+        # Print the generated response and the updated action index
+        # print(f"Updated action index: {action_index}")
+
+
+
+
+        with open("donottouch/chatbot_response.txt", "w") as file:
+            file.write(chatbot_response)
+
+        conversation_history.append({"role": "ai", "content": chatbot_response})
+        if '[Not Speaking]' in user_input:
+            with open("statuses/chatbot_replied.txt", "w") as file:
+                file.write('true')
+
+        tool_name, tool_args = chat_utils.extract_tool_info(chatbot_response)
+
+        # Ensure tool_name is not None before writing
+        if tool_name is None:
+            tool_name = "unknown_tool"  # Default or fallback value
+
+        with open("statuses/status.txt", "w") as file:
+            file.write(tool_name)
+
+
+        if tool_name in ('listen', 'ignore'):
+            listening = True
+            chatbot_listening = chatbot_response
+            with open("donottouch/chatbot_listening.txt", "w") as file:
+                file.write(chatbot_listening)            
+            conversation_history = conversation_history[:-2] # REMOVES LAST TWO IF LISTEN
+        else:
+            if listening:
+                conversation_history = conversation_history[:-2]
+                conversation_history.append({"role": "user", "content": halved_user_content})
+                conversation_history.append({"role": "ai", "content": chatbot_listening})       
+                conversation_history.append({"role": "user", "content": user_input})                 
+                conversation_history.append({"role": "ai", "content": chatbot_response})
+                listening = False
+
+        if '[Not Speaking]' in user_input and tool_name in ('listen', 'ignore'):
+            conversation_history.append({"role": "user", "content": user_input})
+            conversation_history.append({"role": "ai", "content": chatbot_response})
+
+
+
+
+        if tool_args is not None:
+            text_to_save = tool_args.get('text', '')
+        else:
+            text_to_save = ''   
+
+        save_response(text_to_save)
+        # print(chatbot_response)
+
+        if len(conversation_history) > 50:
+            conversation_history = conversation_history[-50:]
 
 
         # Open a file in write mode
         with open('conversation_history.txt', 'w') as file:
             for item in conversation_history:
-                file.write(json.dumps(item) + '\n') 
+                file.write(json.dumps(item) + '\n')
+        # print("\n\n\nCONVERSATION HISTORY\n\n\n", conversation_history)
 
-        # Assign the result of the function to the variable
-        current_time = get_current_time_sgt()
-
-
-
-        system_md = files.read_file("prompts/system.md")
-        personality = files.read_file(f"XTTS-v2_models/XTTS-v2_{speaker_name}/personality/{speaker_name}.md")
-            # Read the last time from the file
-        with open("statuses/seconds.txt", "r") as file:
-            last_time_str = file.read().strip()
-
-        # Parse the last_time_str into a datetime object
-        last_time = datetime.strptime(last_time_str, "%H:%M:%S.%f")
-
-        # Get the current time and only keep the time part
-        current_time = datetime.now().time()
-
-        # Convert current_time to datetime by adding today's date to match formats
-        current_datetime = datetime.combine(datetime.today(), current_time)
-
-        # Calculate the difference using the time part of last_time
-        time_difference = current_datetime - datetime.combine(datetime.today(), last_time.time())
-
-        # Convert the difference to seconds
-        seconds = time_difference.total_seconds()
-
-        system = f"{personality}\n{system_md}"
-        if user_input == '':
-            prompt = [{"role": "system", "content": system}] + conversation_history + [{'role': 'user', 'content': '[No Response. Please wait for the user to speak again.]'}]
-        else:
-            prompt = [{"role": "system", "content": system}] + conversation_history + [{'role': 'user', 'content': user_input}]
-
-        with open("ppppppppppppppppppp.txt", "w") as file:
-            file.write("\n".join(str(item) for item in prompt))
-
-
-
-        chatbot_response = stream_system(chat_llm, prompt)
-
-        tool_name, tool_args = chat_utils.extract_tool_info(chatbot_response)
-
-
-        if tool_name is None:
-            tool_name = "unknown_tool"  # Default or fallback value
-
-
-
-        if tool_name in ('listen', 'ignore', 'wait'):
-            if '[Not Speaking]' in user_input:
-                with open("statuses/user_input2.txt", "w") as file:
-                    file.write(user_input)
-
-                with open("statuses/restarted.txt", "r") as file:
-                    restarted = file.read()
-
-                if restarted == 'true':
-                    with open("transcription/input.txt", "w") as file:
-                        file.write('')
-                    with open("statuses/restarted.txt", "w") as file:
-                        file.write('false')
-
-            if user_input == '':
-                with open("statuses/user_input2.txt", "r") as file:
-                    user_input2 = file.read()
-                if user_input2 != '':
-                    user_input2 = user_input2.replace('[Speaking]', '').replace('[Not Speaking]', '').strip()
-                    conversation_history.append({"role": "user", "content": user_input2})
-                    with open("statuses/chatbot_replied.txt", "w") as file:
-                        file.write('true')  
-                    with open("statuses/user_input2.txt", "w") as file:
-                        file.write('')                
-            # Open a file in write mode
-            with open('conversation_history.txt', 'w') as file:
-                for item in conversation_history:
-                    file.write(json.dumps(item) + '\n') 
-
-            conversation_history_pretty = "\n".join(
-                f"{entry['role'].capitalize()}: {entry['content']}" for entry in conversation_history
-            )
-
-        else:
-            if user_input == '':
-                conversation_history.append({"role": "user", "content": '[No Response. Please wait for the user to speak again.]'})
-
-            elif '[Speaking]' in user_input:
-                user_input = user_input.replace('[Speaking]', '').replace('[Not Speaking]', '').strip()
-                conversation_history.append({"role": "user", "content": f'{user_input}- (interrupted by AI)'})
-            else:
-                user_input = user_input.replace('[Speaking]', '').replace('[Not Speaking]', '').strip()
-
-                conversation_history.append({"role": "user", "content": user_input})
-            
-            if tool_args is not None:
-                text = tool_args.get('text', '')
-            else:
-                text = ''   
-
-            chatbot_response = text
-
-            conversation_history.append({"role": "ai", "content": chatbot_response})
-    
-
-
-
-
-            with open("transcription/input.txt", "r") as file:
-                get_user_input = file.read() 
-
-
-            if '[Not Speaking]' in get_user_input:
-                with open("statuses/chatbot_replied.txt", "w") as file:
-                    file.write('true')        
-
-
-
-            conversation_history_pretty = "\n".join(
-                f"{entry['role'].capitalize()}: {entry['content']}" for entry in conversation_history
-            )
-                    
-
-
-            if len(conversation_history) > 50:
-                conversation_history = conversation_history[-50:]
-
-
-            # Open a file in write mode
-            with open('conversation_history.txt', 'w') as file:
-                for item in conversation_history:
-                    file.write(json.dumps(item) + '\n')
-            # print("\n\n\nCONVERSATION HISTORY\n\n\n", conversation_history)
-
-            spoken_ai_response = text
-            
+        if tool_name in ('response', 'backchannel', 'interrupt'):
+            spoken_ai_response = tool_args.get('text', '')
             print('\nAI:', spoken_ai_response)
             try:
                 with open("transcription/output.txt", "w") as file:
@@ -704,10 +782,7 @@ def threading_response():
             except Exception as e:
                 print("Error writing to file: ", e)
 
-            if use_low_tts:
-                generate_pyttsx3_voice.running()
-            else:
-                generate_voice.run()
+            generate_voice.run()
 
             audio_file = file_to_transcribe(if_robotic)
 
@@ -752,85 +827,56 @@ def threading_response():
                         
                     with open("transcription/input.txt", "r") as file:
                         spoken_user_input = file.read()
-                    print(f"Length of spoken_user_input: {len(spoken_user_input)}")
-                    if spoken_user_input.strip() == '':
-                        speak_system_prompt = f"{personality}\n{conversation_history}\n{speak_status_md}\nCurrent spoken words by you: '{spoken_ai_response}'"
-                    else:
-                        speak_system_prompt = f"{personality}\n{conversation_history}\n{speak_status_md}\nCurrent spoken words by the user: '{spoken_user_input}' (overlapped)\nCurrent spoken words by you: '{spoken_ai_response}'"
+                    if spoken_user_input == '':
+                        spoken_user_input = 'none'
+
+                    speak_system_prompt = f"{personality}\n{speak_system_md}\n{speak_status_md}\n{conversation_history}\nCurrent spoken words by you: '{spoken_ai_response}'\nCurrent spoken words by the user: '{spoken_user_input}'"
                     with open("speak_system_prompt.txt", "w") as file:
                         file.write(speak_system_prompt)   
-                    import re
+
                     prompt = [{"role": "system", "content": speak_system_prompt}]
                     speak_status_response = stream_response_speak(chat_llm, prompt)
                     print("speak_status_response:\n", speak_status_response)
-                    with open("statuses/ai_start_time.txt", "r") as file:
-                        start_time = file.read()                          
 
+                    # Parse the JSON string into a Python dictionary
+                    response_dict = json.loads(speak_status_response)
 
-                    with open("statuses/ai_latest_word_time.txt", "r") as file:
-                        end_time = file.read() 
+                    # Extract the value of the 'speak' key
+                    speak_status_str = response_dict.get('continue')
+                    thoughts_str = response_dict.get('reason')
+                    print("speak_status: ", speak_status_str)
+                    print("thought_str: ", thoughts_str)
+                    print("")
                      
-                    if 'true' in speak_status_response:
+                    if speak_status_str.lower() == 'true':
                         speak_status = True
                         with open("statuses/speak_status.txt", "w") as file:
                             file.write('true')       
                         if not playback_active:
                             with open("statuses/speak_status.txt", "w") as file:
                                file.write('false')         
-                            if spoken_user_input != '':  
-                                # finished_speaking_system = f"You have finished speaking; however, the user has overlapped your words with their own.\nYour spoken words: {spoken_ai_response}\nThe user's spoken words: {spoken_user_input}"
-                                                                # Check if the last entry has "role": "ai" and "content" key
-                                if conversation_history and conversation_history[-1].get("role") == "ai" and "content" in conversation_history[-1]:
-
-                                    # If it matches, then proceed to modify the entry
-                                    conversation_history[-1] = {"role": "ai", "content": f'{spoken_ai_response} (overlapped)'}
-
+                            if spoken_user_input != 'none':  
+                                finished_speaking_system = f"You have finished speaking; however, the user has overlapped your words with their own.\nYour thoughts: {thoughts_str}\nYour spoken words: {spoken_ai_response}\nThe user's spoken words: {spoken_user_input}"
+                                conversation_history.append({"role": "system", "content": finished_speaking_system})   
                                 if '[Speaking]' in spoken_user_input:
                                     break        
                             if '[Not Speaking]' in spoken_user_input:
-                                spoken_user_input = spoken_user_input.replace('[Speaking]', '').replace('[Not Speaking]', '').strip()
-
-                                conversation_history.append({"role": "user", "content":  f'{spoken_user_input} (overlapped)'})
-
-                                with open("statuses/ai_start_time.txt", "r") as file:
-                                    start_time = file.read()                          
-
-
-                                with open("statuses/ai_latest_word_time.txt", "r") as file:
-                                    end_time = file.read()
-
                                 with open("transcription/input.txt", "w") as file:
                                     file.write('')
                                 print('break loop 1...')
                                 break
-                            if spoken_user_input == '':
-                                # Check if the last entry has "role": "ai" and "content" key
-                                if conversation_history and conversation_history[-1].get("role") == "ai" and "content" in conversation_history[-1]:
-                                    # If it matches, then proceed to modify the entry
-                                    with open("statuses/ai_start_time.txt", "r") as file:
-                                        start_time = file.read()                          
-
-
-                                    with open("statuses/ai_latest_word_time.txt", "r") as file:
-                                        end_time = file.read()
-
-                                    conversation_history[-1] = {"role": "ai", "content": f'(start time: {start_time}) {text} (latest word time: {end_time})'}
+                            if spoken_user_input == 'none':
+                                finished_speaking_system = f'You have finished speaking without any interruptions.\nYour thoughts: {thoughts_str}\nYour spoken words: {spoken_ai_response}'
+                                conversation_history.append({"role": "system", "content": finished_speaking_system})   
                                 print('break loop 2...')
                                 break
                     else:
                         speak_status = False
                         with open("statuses/speak_status.txt", "w") as file:
                             file.write('false')     
-                        # interrupted_ai_system = f"You have decided to stop speaking.\nYour spoken words: {spoken_ai_response}\n The user's spoken words: {spoken_user_input}"
-                                                        # Check if the last entry has "role": "ai" and "content" key
-                        if conversation_history and conversation_history[-1].get("role") == "ai" and "content" in conversation_history[-1]:
-                            # If it matches, then proceed to modify the entry
-                            conversation_history[-1] = {"role": "ai", "content": f'{spoken_ai_response}- (interrupted by user)'}
-
+                        interrupted_ai_system = f"You have decided to stop speaking.\nYour thoughts: {thoughts_str}\nYour spoken words: {spoken_ai_response}\n The user's spoken words: {spoken_user_input}"
+                        conversation_history.append({"role": "system", "content": interrupted_ai_system})
                         if '[Not Speaking]' in spoken_user_input:
-                            spoken_user_input = spoken_user_input.replace('[Speaking]', '').replace('[Not Speaking]', '').strip()
-
-                            conversation_history.append({"role": "user", "content": spoken_user_input})
                             with open("transcription/input.txt", "w") as file:
                                 file.write('')
                         print('break loop 3...')
@@ -840,20 +886,81 @@ def threading_response():
                 print("Breaking the loop 3...")
                 break
 
+import threading
+
+def run_thread():
+    global simulated_input
+    if visualizer_on:
+        visualizer_thread = threading.Thread(target=run_visualizer)
+        visualizer_thread.start()
+
+    with open("donottouch/user_input.txt", "r") as file:
+        user_input = file.read()
+    with open("donottouch/halved_user_content.txt", "r") as file:
+        halved_user_content = file.read()
+    with open("donottouch/chatbot_response.txt", "r") as file:
+        chatbot_response = file.read()
+    with open("donottouch/chatbot_listening.txt", "r") as file:
+        chatbot_listening = file.read()
+
+    if simulated_input:
+        simulation = threading.Thread(target=input_simulation)
+        simulation.start()
+    else:
+        real_time_transcription = threading.Thread(target=execute)
+        real_time_transcription.start()
+
+    chat_bot(conversation_history, user_input, halved_user_content, chatbot_listening, chatbot_response)
+
+
+
+def run_thread_stop():
+    global simulated_input
+    if visualizer_on:
+        visualizer_thread = threading.Thread(target=run_visualizer)
+        visualizer_thread.start()
+
+    with open("donottouch/user_input.txt", "r") as file:
+        user_input = file.read()
+    with open("donottouch/halved_user_content.txt", "r") as file:
+        halved_user_content = file.read()
+    with open("donottouch/chatbot_response.txt", "r") as file:
+        chatbot_response = file.read()
+    with open("donottouch/chatbot_listening.txt", "r") as file:
+        chatbot_listening = file.read()
+
+
+    if simulated_input:
+        simulation = threading.Thread(target=input_simulation)
+        simulation.start()
+    else:
+        real_time_transcription = threading.Thread(target=execute)
+        real_time_transcription.start()
+
+    while True:
+        time.sleep(1)
+        try:
+            with open("transcription/input.txt", "r") as file:
+                user_input = file.read()
+                    
+        except:
+            user_input = ''
 
 
 
 
 
+        if user_input == '':
+            pass
+        else:
+            chat_bot(conversation_history, user_input, halved_user_content, chatbot_listening, chatbot_response)
 
 
 
-ai_responding = threading.Thread(target=threading_response)
-ai_responding.start()
 
-if simulated_input:
-    simulation = threading.Thread(target=input_simulation)
-    simulation.start()
+if active_listening:
+    run_thread()   
+    print('Active Listening: On')
 else:
-    real_time_transcription = threading.Thread(target=execute)
-    real_time_transcription.start()
+    run_thread_stop()
+    print('Active Listening: Off')
