@@ -1,7 +1,7 @@
 #IMPORTANT PARAMETER!!!
 active_listening = True
 simulated_input = False
-reset_memories = True
+reset_memories = False
 use_low_tts = True
 
 import os
@@ -554,7 +554,6 @@ def threading_response():
     conversation_history_pretty = ''
 
     while True:
-        print('\n\n\n\nconvo\n\n\n\n\n\n', conversation_history_pretty)
         with open("transcription/input.txt", "r") as file:
             user_input = file.read()
 
@@ -571,47 +570,53 @@ def threading_response():
 
         system_md = files.read_file("prompts/system.md")
         personality = files.read_file(f"XTTS-v2_models/XTTS-v2_{speaker_name}/personality/{speaker_name}.md")
-            # Read the last time from the file
-        with open("statuses/seconds.txt", "r") as file:
-            last_time_str = file.read().strip()
-
-        # Parse the last_time_str into a datetime object
-        last_time = datetime.strptime(last_time_str, "%H:%M:%S.%f")
-
-        # Get the current time and only keep the time part
-        current_time = datetime.now().time()
-
-        # Convert current_time to datetime by adding today's date to match formats
-        current_datetime = datetime.combine(datetime.today(), current_time)
-
-        # Calculate the difference using the time part of last_time
-        time_difference = current_datetime - datetime.combine(datetime.today(), last_time.time())
-
-        # Convert the difference to seconds
-        seconds = time_difference.total_seconds()
-
-        system = f"{personality}\n{system_md}"
         if user_input == '':
-            prompt = [{"role": "system", "content": system}] + conversation_history + [{'role': 'user', 'content': '[No Response. Please wait for the user to speak again.]'}]
+            # Read the last time from the file
+            with open("statuses/seconds.txt", "r") as file:
+                last_time_str = file.read().strip()
+
+            # Parse the last_time_str into a datetime object
+            last_time = datetime.strptime(last_time_str, "%H:%M:%S.%f")
+
+            # Get the current time and only keep the time part
+            current_time = datetime.now().time()
+
+            # Convert current_time to datetime by adding today's date to match formats
+            current_datetime = datetime.combine(datetime.today(), current_time)
+
+            # Calculate the difference using the time part of last_time
+            time_difference = current_datetime - datetime.combine(datetime.today(), last_time.time())
+
+            # Convert the difference to seconds
+            seconds = time_difference.total_seconds()
+
+            system = f"{personality}\n{system_md}\n\n{current_time}\n\n{conversation_history_pretty}\nUser: (Since user's last message, no input for {seconds} seconds ago)"
         else:
-            prompt = [{"role": "system", "content": system}] + conversation_history + [{'role': 'user', 'content': user_input}]
+            system = f"{personality}\n{system_md}\n\\n{current_time}\n\n{conversation_history_pretty}\nUser: {user_input}"
+
+        # user_input = input('\nUser:\n')
+
+        prompt = [{"role": "system", "content": system}]
 
         with open("ppppppppppppppppppp.txt", "w") as file:
             file.write("\n".join(str(item) for item in prompt))
 
 
 
-        chatbot_response = stream_system(chat_llm, prompt)
+        tool = stream_system(chat_llm, prompt)
 
-        tool_name, tool_args = chat_utils.extract_tool_info(chatbot_response)
-
-
-        if tool_name is None:
-            tool_name = "unknown_tool"  # Default or fallback value
+        with open("statuses/tool_name.txt", "w") as file:
+            file.write(tool)
 
 
 
-        if tool_name in ('listen', 'ignore', 'wait'):
+
+        with open("statuses/tool_name.txt", "r") as file:
+            tool_name = file.read()
+
+
+
+        if 'listen' in tool_name or 'ignore' in tool_name or 'wait' in tool_name:
             if '[Not Speaking]' in user_input:
                 with open("statuses/user_input2.txt", "w") as file:
                     file.write(user_input)
@@ -629,7 +634,6 @@ def threading_response():
                 with open("statuses/user_input2.txt", "r") as file:
                     user_input2 = file.read()
                 if user_input2 != '':
-                    user_input2 = user_input2.replace('[Speaking]', '').replace('[Not Speaking]', '').strip()
                     conversation_history.append({"role": "user", "content": user_input2})
                     with open("statuses/chatbot_replied.txt", "w") as file:
                         file.write('true')  
@@ -645,40 +649,45 @@ def threading_response():
             )
 
         else:
-            if user_input == '':
-                conversation_history.append({"role": "user", "content": '[No Response. Please wait for the user to speak again.]'})
+            response_md = files.read_file("prompts/response.md")
 
+            system_prompt = f"{personality}\n\n{response_md}\n\nCurrent Status: {tool_name}"
+            if user_input == '':
+
+                # Read the last time from the file
+                with open("statuses/seconds.txt", "r") as file:
+                    last_time_str = file.read().strip()
+
+                # Parse the last_time_str into a datetime object
+                last_time = datetime.strptime(last_time_str, "%H:%M:%S.%f")
+
+                # Get the current time and only keep the time part
+                current_time = datetime.now().time()
+
+                # Convert current_time to datetime by adding today's date to match formats
+                current_datetime = datetime.combine(datetime.today(), current_time)
+
+                # Calculate the difference using the time part of last_time
+                time_difference = current_datetime - datetime.combine(datetime.today(), last_time.time())
+
+                # Convert the difference to seconds
+                seconds = time_difference.total_seconds()
+                conversation_history.append({"role": "user", "content": f"(Since user's last message, no input for {seconds} seconds ago)"})
             elif '[Speaking]' in user_input:
-                user_input = user_input.replace('[Speaking]', '').replace('[Not Speaking]', '').strip()
                 conversation_history.append({"role": "user", "content": f'{user_input}- (interrupted by AI)'})
             else:
-                user_input = user_input.replace('[Speaking]', '').replace('[Not Speaking]', '').strip()
-
                 conversation_history.append({"role": "user", "content": user_input})
             
-            if tool_args is not None:
-                text = tool_args.get('text', '')
-            else:
-                text = ''   
+            chatbot_stream = stream_response(chat_llm, system_prompt, conversation_history)
+
+            thoughts, text = chat_utils.extract_response(chatbot_stream)
 
             chatbot_response = text
 
             conversation_history.append({"role": "ai", "content": chatbot_response})
-    
-
-
-
-
-            with open("transcription/input.txt", "r") as file:
-                get_user_input = file.read() 
-
-
-            if '[Not Speaking]' in get_user_input:
+            if '[Not Speaking]' in user_input:
                 with open("statuses/chatbot_replied.txt", "w") as file:
-                    file.write('true')        
-
-
-
+                    file.write('true')            
             conversation_history_pretty = "\n".join(
                 f"{entry['role'].capitalize()}: {entry['content']}" for entry in conversation_history
             )
@@ -695,7 +704,8 @@ def threading_response():
                     file.write(json.dumps(item) + '\n')
             # print("\n\n\nCONVERSATION HISTORY\n\n\n", conversation_history)
 
-            spoken_ai_response = text
+            spoken_ai_response = chatbot_response
+
             
             print('\nAI:', spoken_ai_response)
             try:
@@ -754,9 +764,9 @@ def threading_response():
                         spoken_user_input = file.read()
                     print(f"Length of spoken_user_input: {len(spoken_user_input)}")
                     if spoken_user_input.strip() == '':
-                        speak_system_prompt = f"{personality}\n{conversation_history}\n{speak_status_md}\nCurrent spoken words by you: '{spoken_ai_response}'"
+                        speak_system_prompt = f"{personality}\n{conversation_history}\n{speak_system_md}\n{speak_status_md}\nCurrent spoken words by you: '{spoken_ai_response}'"
                     else:
-                        speak_system_prompt = f"{personality}\n{conversation_history}\n{speak_status_md}\nCurrent spoken words by the user: '{spoken_user_input}' (overlapped)\nCurrent spoken words by you: '{spoken_ai_response}'"
+                        speak_system_prompt = f"{personality}\n{conversation_history}\n{speak_system_md}\n{speak_status_md}\nCurrent spoken words by the user: '{spoken_user_input}' (overlapped)\nCurrent spoken words by you: '{spoken_ai_response}'"
                     with open("speak_system_prompt.txt", "w") as file:
                         file.write(speak_system_prompt)   
                     import re
@@ -788,8 +798,6 @@ def threading_response():
                                 if '[Speaking]' in spoken_user_input:
                                     break        
                             if '[Not Speaking]' in spoken_user_input:
-                                spoken_user_input = spoken_user_input.replace('[Speaking]', '').replace('[Not Speaking]', '').strip()
-
                                 conversation_history.append({"role": "user", "content":  f'{spoken_user_input} (overlapped)'})
 
                                 with open("statuses/ai_start_time.txt", "r") as file:
@@ -828,8 +836,6 @@ def threading_response():
                             conversation_history[-1] = {"role": "ai", "content": f'{spoken_ai_response}- (interrupted by user)'}
 
                         if '[Not Speaking]' in spoken_user_input:
-                            spoken_user_input = spoken_user_input.replace('[Speaking]', '').replace('[Not Speaking]', '').strip()
-
                             conversation_history.append({"role": "user", "content": spoken_user_input})
                             with open("transcription/input.txt", "w") as file:
                                 file.write('')

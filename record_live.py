@@ -12,7 +12,7 @@ RECORDING_RATE = 44100
 CHUNK_SIZE = 1024
 VAD_CHUNK_SIZE = 512  # Size of each chunk processed by VAD
 MIN_VAD_CHUNK_SIZE = 1600  # Minimum chunk size (in samples) for VAD to process (depends on model)
-SILENCE_DURATION = 1
+SILENCE_DURATION = 0.5
 MAX_NO_VOICE_DURATION = 10
 # Load VAD model
 USE_ONNX = False  # Change to True if you want to test onnx model
@@ -118,6 +118,8 @@ def record_audio(filename='audios/input.wav', channels=1, rate=RECORDING_RATE, c
                     voice_detected = False  # Reset voice detected flag    
                     with open("audios/input.wav", "wb") as file:
                         file.write(b'')
+                    with open("statuses/restarted.txt", "w") as file:
+                        file.write('true')
 
                         # Initialize PyAudio
                     audio = pyaudio.PyAudio()

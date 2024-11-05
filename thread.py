@@ -115,6 +115,8 @@ def process_and_transcribe(audio_file, whisper_model):
                         with open("statuses/chatbot_replied.txt", "w") as file:
                             file.write('false')
                         # Save transcription to a file
+                        with open("statuses/seconds.txt", "w") as file:
+                            file.write(user_latest_word_time)
                         try:
                             with open("transcription/input.txt", "w") as file:
                                 file.write(user_input)
@@ -127,7 +129,9 @@ def process_and_transcribe(audio_file, whisper_model):
                         user_input = transcribe_with_whisper(audio_file, whisper_model)
 
                         user_input = f'(start time: {user_start_time}) {user_input} [Not Speaking] (latest word time: {user_latest_word_time})'
-
+                        # Save transcription to a file
+                        with open("statuses/seconds.txt", "w") as file:
+                            file.write(user_latest_word_time)
                         with open("transcription/input.txt", "w") as file:
                             file.write(user_input)
                     break
@@ -193,4 +197,5 @@ def execute():
         # print("Worker thread has been stopped.")
 
 # execute()
+
 

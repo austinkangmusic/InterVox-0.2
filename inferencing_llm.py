@@ -8,29 +8,33 @@ chat_llm = chat_utils.use_chat_llm()
 
 
 def stream_response(model, system_prompt, conversation_history):
-    # Combine system prompt, conversation history, and user input
+    """Stream the response using the provided model."""
+    # Combine system prompt and conversation history
     full_conversation = [{"role": "system", "content": system_prompt}] + conversation_history
     
     chunks = []
     
     # Stream response from the model
-    response_generator = model.stream(full_conversation)  # Adjust based on the streaming mechanism
+    response_generator = model.stream(full_conversation)
     
     # Iterate through the streamed response
     for chunk in response_generator:
-        if isinstance(chunk, str):
-            # If chunk is a string, append directly
-            chunks.append(chunk)
-            print(chunk, end="", flush=True)
-        else:
-            # If chunk is an object, handle accordingly
-            delta_content = chunk.content  # Update this based on actual response structure
+        if chunk is None:
+            continue  # Skip if chunk is None
+
+        # Check if chunk is an object and contains content
+        if hasattr(chunk, 'content'):  # Check if chunk has a 'content' attribute
+            delta_content = chunk.content
             if delta_content is not None:
                 chunks.append(delta_content)
                 print(delta_content, end="", flush=True)
+        elif isinstance(chunk, str):  # If chunk is a string, append directly
+            chunks.append(chunk)
+            print(chunk, end="", flush=True)
 
     print('\n')
     return ''.join(chunks)
+
 
 conversation_history = []
 

@@ -41,8 +41,9 @@ def ensure_model_exists(model_name):
     if not os.path.exists(model_path) and not check_model_exists(model_name):
         pull_model(model_name)
 
-# Ollama models
-def get_ollama_chat(model_name: str, temperature=DEFAULT_TEMPERATURE, base_url="http://localhost:11434"):
+# Ollama models https://tidy-exotic-serval.ngrok-free.app
+# http://localhost:11434
+def get_ollama_chat(model_name: str, temperature=DEFAULT_TEMPERATURE, base_url="https://tidy-exotic-serval.ngrok-free.app"):
     ensure_model_exists(model_name)
     return OllamaLLM(model=model_name, temperature=temperature, base_url=base_url)
 
@@ -52,7 +53,6 @@ def get_ollama_embedding(model_name: str, temperature=DEFAULT_TEMPERATURE):
 
     
 # HuggingFace models
-
 def get_huggingface_embedding(model_name:str):
     return HuggingFaceEmbeddings(model_name=model_name)
 
@@ -67,6 +67,60 @@ def get_lmstudio_embedding(model_name:str, base_url="http://localhost:1234/v1"):
 def get_anthropic_chat(model_name:str, api_key=None, temperature=DEFAULT_TEMPERATURE):
     api_key = api_key or get_api_key("anthropic")
     return ChatAnthropic(model_name=model_name, temperature=temperature, api_key=api_key) # type: ignore
+
+
+# llms.py
+import requests
+import json
+
+# Retrieve the API key from environment variables
+ARLIAI_API_KEY = os.getenv("ARLIAI_API_KEY")
+API_URL = "https://api.arliai.com/v1/chat/completions"
+
+def get_arli_ai_chat(model_name: str, api_key=None, temperature=0.7):
+    """Get an instance of the ArliAI chat model."""
+    api_key = api_key or ARLIAI_API_KEY
+    return ArliAIChat(model_name=model_name, api_key=api_key, temperature=temperature)
+
+class ArliAIChat:
+    def __init__(self, model_name, api_key, temperature):
+        self.model_name = model_name
+        self.api_key = api_key
+        self.temperature = temperature
+
+    def stream(self, full_conversation):
+        payload = json.dumps({
+            "model": self.model_name,
+            "messages": full_conversation,
+            "temperature": self.temperature,
+            "stream": True
+        })
+        
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f"Bearer {self.api_key}"
+        }
+
+        response = requests.post(API_URL, headers=headers, data=payload, stream=True)
+        return self.process_stream_response(response)
+
+    def process_stream_response(self, response):
+        for line in response.iter_lines():
+            if line:
+                line_str = line.decode('utf-8').strip()
+                if line_str.startswith('data: '):
+                    line_str = line_str[6:]
+                if line_str == '[DONE]':
+                    break
+                try:
+                    chunk = json.loads(line_str)
+                    yield chunk.get('choices', [{}])[0].get('delta', {}).get('content')
+                except json.JSONDecodeError:
+                    print("Error decoding JSON:", line_str)
+
+
+
+
 
 # OpenAI models
 def get_openai_chat(model_name:str, api_key=None, temperature=DEFAULT_TEMPERATURE):
