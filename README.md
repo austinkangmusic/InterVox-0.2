@@ -17,12 +17,12 @@
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/username/project-name.git
+D:\Utilities\Git\Git\bin\git.exe -c http.sslVerify=false clone https://github.com/austinkangmusic/InterVox-0.2.git
 ```
 
 ### Navigate to the Project Directory
 ```bash
-cd project-name
+cd InterVox-0.2
 ```
 
 ---
@@ -31,7 +31,7 @@ cd project-name
 
 ### Create Virtual Environment (No Activation Needed)
 ```bash
-python -m venv venv
+& "D:\Utilities\python310\python.exe" -m venv venv
 ```
 
 ### Verify Python Executable Path
